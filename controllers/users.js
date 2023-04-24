@@ -3,7 +3,6 @@ const User = require('../models/user');
 const {
   handleErrors,
   HTTP_STATUS_CREATED,
-  /* throwNotFoundError, */
 } = require('../utils/handleErrors');
 
 module.exports.getUsers = (req, res) => {
