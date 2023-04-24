@@ -3,7 +3,7 @@ const User = require('../models/user');
 const {
   handleErrors,
   HTTP_STATUS_CREATED,
-  throwNotFoundError,
+  /* throwNotFoundError, */
 } = require('../utils/handleErrors');
 
 module.exports.getUsers = (req, res) => {
@@ -17,7 +17,7 @@ module.exports.getUserDataById = (req, res) => {
     .orFail()
     .then((user) => {
       if (!user) {
-        return (throwNotFoundError());
+        return (handleErrors());
       }
       return res.status(200).send(user);
     })
