@@ -1,3 +1,4 @@
+const ForbiddenError = require('../errors/ForbiddenError');
 const Card = require('../models/card');
 const {
   HTTP_STATUS_CREATED,
@@ -28,7 +29,16 @@ module.exports.deleteCard = (req, res) => {
 
   Card.findByIdAndDelete({ _id })
     .orFail()
-    .then((card) => res.send({ data: card }))
+    .then((card) => {
+      if ((card.owner).toString() === req.user._id) {
+        Card.deleteOne(card._id)
+          .orFail()
+          .then(res.send({ message: 'Карточка удалена' }))
+          .catch(next);
+      } else {
+        next(new ForbiddenError());
+      }
+    })
     .catch((err) => handleErrors(err, res));
 };
 

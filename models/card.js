@@ -1,15 +1,21 @@
 const mongoose = require('mongoose');
 
+const { URL_REGEXP } = require('../utils/constants');
+
 const cardSchema = new mongoose.Schema({
   name: {
-    required: [true, 'Не заполнено обязательное поле'],
     type: String,
+    required: [true, 'Не заполнено обязательное поле'],
     minlength: [2, 'Минимальная длина - два символа'],
     maxlength: [30, 'Максиимальная длина - тридцать символов'],
   },
   link: {
     type: String,
     required: [true, 'Не заполнено обязательное поле'],
+    validate: {
+      validator: (url) => URL_REGEXP.test(url),
+      message: 'Некорректная ссылка',
+    },
   },
   owner: {
     type: mongoose.Schema.Types.ObjectId,
