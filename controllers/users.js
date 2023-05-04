@@ -29,27 +29,31 @@ module.exports.login = (req, res, next) => {
     .catch(next);
 };
 
-module.exports.getUsers = (req, res) => {
+module.exports.getUsers = (req, res, next) => {
   User.find({})
     .then((users) => res.status(200).send(users))
-    .catch((err) => handleErrors(err, res));
+    .catch(next);
 };
 
-module.exports.getUserDataById = (req, res) => {
+module.exports.getUserDataById = (req, res, next) => {
   User.findById(req.params.userId)
     .orFail()
     .then((user) => {res.status(200).send(user);
     })
-    .catch((err) => handleErrors(err, res));
+    .catch(next);
 };
 
-module.exports.createUser = (req, res) => {
+module.exports.createUser = (req, res, next) => {
   const { name, about, avatar, email, password } = req.body;
   bcrypt.hash(password, 10)
   then((hash) =>
   User.create({ name, about, avatar, email, password: hash })
-    .then((user) => res.status(HTTP_STATUS_CREATED).send(user))
-    .catch((err) => handleErrors(err, res)));
+  .then((user) => {
+    const data = user.toObject();
+    delete data.password;
+    res.send(data);
+  })
+    .catch(next));
 };
 
 module.exports.getCurrentUser = (req, res, next) => {
@@ -59,7 +63,7 @@ module.exports.getCurrentUser = (req, res, next) => {
     .catch(next);
 };
 
-module.exports.updateUser = (req, res) => {
+module.exports.updateUser = (req, res, next) => {
   const { name, about } = req.body;
   User.findByIdAndUpdate(
     req.user._id,
@@ -71,10 +75,10 @@ module.exports.updateUser = (req, res) => {
   )
     .orFail()
     .then((user) => res.send({ data: user }))
-    .catch((err) => handleErrors(err, res));
+    .catch(next);
 };
 
-module.exports.updateUserAvatar = (req, res) => {
+module.exports.updateUserAvatar = (req, res, next) => {
   const { avatar } = req.body;
   User.findByIdAndUpdate(
     req.user._id,
@@ -86,5 +90,5 @@ module.exports.updateUserAvatar = (req, res) => {
   )
     .orFail()
     .then((userAvatar) => res.send({ data: userAvatar }))
-    .catch((err) => handleErrors(err, res));
+    .catch(next);
 };
