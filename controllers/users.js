@@ -44,16 +44,17 @@ module.exports.getUserDataById = (req, res, next) => {
 };
 
 module.exports.createUser = (req, res, next) => {
-  const { name, about, avatar, email, password } = req.body;
-  bcrypt.hash(password, 10)
-  then((hash) =>
+  const { name, about, avatar, email } = req.body;
+  bcrypt.hash(req.body.password, 10)
+  .then((hash) =>
   User.create({ name, about, avatar, email, password: hash })
   .then((user) => {
     const data = user.toObject();
     delete data.password;
     res.send(data);
   })
-    .catch(next));
+    .catch(next)
+    );
 };
 
 module.exports.getCurrentUser = (req, res, next) => {
