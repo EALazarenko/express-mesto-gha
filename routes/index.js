@@ -16,7 +16,7 @@ router
   .use('/users', userRoutes)
   .use('/cards', cardRoutes)
   .use('*', (req, res, next) => {
-    next(new NotFoundError("Страница не найдена"));
+    next(new NotFoundError('Страница не найдена'));
   });
 
 module.exports = router;
