@@ -6,15 +6,8 @@ const routes = require('./routes/index');
 const { PORT = 3000 } = process.env;
 const app = express();
 const { errors } = require("celebrate");
-const err = require('./middlewares/err');
+const errorHandler = require('./middlewares/err');
 /* const handleErrors = require('./utils/handleErrors'); */
-
-
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(errors());
-app.use(cookieParser());
-app.use(err);
 
 mongoose.connect('mongodb://127.0.0.1/mestodb', {
   useNewUrlParser: true,
@@ -26,6 +19,15 @@ app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
 });
 
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(routes);
+app.use(cookieParser());
+app.use(errors());
+app.use(errorHandler);
+
+
+
 /* app.use((req, res, next) => {
   req.user = {
     _id: '64441bfa323791240b2ad4c3',
@@ -34,4 +36,4 @@ app.listen(PORT, () => {
   next();
 }); */
 
-app.use(routes);
+

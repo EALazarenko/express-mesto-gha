@@ -15,7 +15,7 @@ const HTTP_STATUS_FORBIDDEN = 403;
 const HTTP_STATUS_CONFLICT = 409;
 
 /* function handleErrors(err, res) { */
-module.exports = (err, req, res, next) => {
+/* module.exports = (err, req, res, next) => {
   if (err.code === 11000) {
     return res.status(HTTP_STATUS_CONFLICT).send({ message: 'Пользователь с таким email уже существует' });
   }
@@ -31,8 +31,8 @@ module.exports = (err, req, res, next) => {
     return res.status(HTTP_STATUS_BAD_REQUEST).send({ message: 'Поле заполнено некорректно' });
   }
   /* return res.status(HTTP_STATUS_INTERNAL_SERVER_ERROR).send({ message: 'Ошибка сервера' }); */
-  return(next);
-}
+ // return(next);
+//} */
 
 module.exports = {
   HTTP_STATUS_INTERNAL_SERVER_ERROR,

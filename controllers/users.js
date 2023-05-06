@@ -7,7 +7,7 @@ const {
   HTTP_STATUS_CREATED,
 } = require('../utils/handleErrors');
 
-const { JWT_SECRET } = require('../utils/constants');
+const { JWT_SECRET } = require('../utils/constants'); //различие,  еще в создании пользователя нет проверки на равенство 1000
 
 module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
@@ -17,14 +17,14 @@ module.exports.login = (req, res, next) => {
       const token = jwt.sign(
         { _id: user._id },
         JWT_SECRET,
-        { expiresIn: "7d" }
+        { expiresIn: '7d' }
         );
-      res.cookie("jwt", token, {
+      res.cookie('jwt', token, {
         maxAge: 3600000 * 24 * 7,
         httpOnly: true,
         sameSite: true,
       });
-      res.send({ message: "Вы авторизованы!" });
+      res.send({ message: 'Вы авторизованы' });
     })
     .catch(next);
 };

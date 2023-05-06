@@ -1,10 +1,15 @@
 const mongoose = require('mongoose');
 const { CastError, ValidationError, DocumentNotFoundError } = mongoose.Error;
 
-const { AuthError } = require('../errors/AuthError');
-const { NotFoundError } = require('../errors/NotFoundError');
-const { ForbiddenError } = require('../errors/ForbiddenError');
-const { HTTP_STATUS_CONFLICT, HTTP_STATUS_NOT_FOUND, HTTP_STATUS_BAD_REQUEST, HTTP_STATUS_FORBIDDEN } = require('../utils/handleErrors');
+const AuthError  = require('../errors/AuthError');
+const NotFoundError = require('../errors/NotFoundError');
+const ForbiddenError = require('../errors/ForbiddenError');
+const { HTTP_STATUS_CONFLICT,
+  HTTP_STATUS_NOT_FOUND,
+  HTTP_STATUS_BAD_REQUEST,
+  HTTP_STATUS_FORBIDDEN,
+  HTTP_STATUS_INTERNAL_SERVER_ERROR,
+  HTTP_STATUS_UNAUTHORIZED } = require('../utils/handleErrors');
 
 module.exports = (err, req, res, next) => {
   switch (true) {
