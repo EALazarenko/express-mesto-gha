@@ -12,9 +12,9 @@ router.post('/signin', signin, login);
 router.post('/signup', signup, createUser);
 
 router
-  .use(auth)
-  .use('/users', userRoutes)
-  .use('/cards', cardRoutes)
+  /* .use(auth) */
+  .use('/users',  userRoutes)
+  .use('/cards', /* auth */ cardRoutes)
   .use('*', (req, res, next) => {
     next(new NotFoundError('Страница не найдена'));
   });

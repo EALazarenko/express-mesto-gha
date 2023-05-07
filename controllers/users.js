@@ -8,6 +8,7 @@ const {
 } = require('../utils/handleErrors');
 
 const { JWT_SECRET } = require('../utils/constants'); //различие,  еще в создании пользователя нет проверки на равенство 1000
+const ConflictError = require('../errors/ConflictError');
 
 module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
@@ -25,6 +26,7 @@ module.exports.login = (req, res, next) => {
         sameSite: true,
       });
       res.send({ message: 'Вы авторизованы' });
+      console.log(token);
     })
     .catch(next);
 };
@@ -36,25 +38,32 @@ module.exports.getUsers = (req, res, next) => {
 };
 
 module.exports.getUserDataById = (req, res, next) => {
-  User.findById(req.params.userId)
+  const _id = req.params.userId;
+  User.findById({ _id })
     .orFail()
-    .then((user) => {res.status(200).send(user);
+    .then((user) => {
+      res.status(200).send(user);
     })
     .catch(next);
+    console.log(_id);
 };
 
 module.exports.createUser = (req, res, next) => {
   const { name, about, avatar, email } = req.body;
   bcrypt.hash(req.body.password, 10)
   .then((hash) =>
-  User.create({ name, about, avatar, email, password: hash })
+  User.create({ name, about, avatar, email, password: hash }))
   .then((user) => {
     const data = user.toObject();
     delete data.password;
     res.send(data);
   })
-    .catch(next)
-    );
+  .catch((err) => {
+    if (err.code === 11000) {
+      next(new ConflictError());
+    }
+    next();
+  });
 };
 
 module.exports.getCurrentUser = (req, res, next) => {

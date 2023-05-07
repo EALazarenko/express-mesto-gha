@@ -4,6 +4,8 @@ const { CastError, ValidationError, DocumentNotFoundError } = mongoose.Error;
 const AuthError  = require('../errors/AuthError');
 const NotFoundError = require('../errors/NotFoundError');
 const ForbiddenError = require('../errors/ForbiddenError');
+const ConflictError = require('../errors/ConflictError');
+
 const { HTTP_STATUS_CONFLICT,
   HTTP_STATUS_NOT_FOUND,
   HTTP_STATUS_BAD_REQUEST,
@@ -16,15 +18,16 @@ module.exports = (err, req, res, next) => {
     case err instanceof ValidationError:
       return res.status(HTTP_STATUS_BAD_REQUEST).send({
         message: `Введены некорректные двнные: ${Object.values(err.errors)
-          .map((e) => e.message)
-          .join(", ")}`,
+          .map((e) => e.message).join(", ")}`,
       });
     case err instanceof DocumentNotFoundError:
-      return res
-        .status( HTTP_STATUS_NOT_FOUND)
-        .send({ message: "Запрашиваемый документ не найден" });
+      return res.status( HTTP_STATUS_NOT_FOUND).send({ message: "Запрашиваемый документ не найден" });
     case err instanceof CastError:
       return res.status(HTTP_STATUS_BAD_REQUEST).send({ message: "Некорректный Id" });
+      case err instanceof ConflictError:
+      return res.status(HTTP_STATUS_CONFLICT).send({ message: err.message });
+      /* case err.code === 11000:
+        return res.status(HTTP_STATUS_CONFLICT).send({ message: 'Пользователь с таким email уже существует' }); */
     case err instanceof ForbiddenError:
       return res.status(HTTP_STATUS_FORBIDDEN).send({ message: err.message });
     case err instanceof AuthError:
