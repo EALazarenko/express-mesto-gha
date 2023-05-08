@@ -6,14 +6,12 @@ const { login, createUser } = require('../controllers/users');
 
 const NotFoundError = require('../errors/NotFoundError');
 const { signin, signup } = require('../middlewares/validations');
-/* const handleErrors = require('../utils/handleErrors'); */
 
 router.post('/signin', signin, login);
 router.post('/signup', signup, createUser);
 
 router
-  /* .use(auth) */
-  .use('/users', auth,  userRoutes)
+  .use('/users', auth, userRoutes)
   .use('/cards', auth, cardRoutes)
   .use('*', (req, res, next) => {
     next(new NotFoundError('Страница не найдена'));
