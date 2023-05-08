@@ -51,7 +51,13 @@ module.exports.getUserDataById = (req, res, next) => {
 
 module.exports.createUser = (req, res, next) => {
   const { name, about, avatar, email } = req.body;
-  bcrypt.hash(req.body.password, 10)
+   User.findOne({ email }).then((user) => {
+    if (user) {
+      next(new ConflictError(`Пользователь с ${email} уже существует.`));
+    }
+
+    return bcrypt.hash(req.body.password, 10);
+  })
   .then((hash) =>
   User.create({ name, about, avatar, email, password: hash }))
   .then((user) => {
@@ -59,13 +65,35 @@ module.exports.createUser = (req, res, next) => {
     delete data.password;
     res.send(data);
   })
-  .catch((err) => {
-    if (err.code === 11000) {
-      next(new ConflictError());
-    }
-    next();
-  });
+  .catch(next);
 };
+
+/* module.exports.createUser = (req, res, next) => {
+  const { email, password } = req.body;
+
+   User.findOne({ email }).then((user) => {
+    if (user) {
+      next(new ConflictError(`Пользователь с ${email} уже существует.`));
+    }
+
+    return bcrypt.hash(password, 10);
+  })
+    .then((hash) => User.create({
+      email,
+      password: hash,
+      name: req.body.name,
+      about: req.body.about,
+      avatar: req.body.avatar,
+    }))
+    .then((user) => res.status(200).send({
+      name: user.name,
+      about: user.about,
+      avatar: user.avatar,
+      _id: user._id,
+      email: user.email,
+    }))
+    .catch(next);
+}; */
 
 /* module.exports.getCurrentUser = (req, res, next) => {
   const { _id } = req.user;

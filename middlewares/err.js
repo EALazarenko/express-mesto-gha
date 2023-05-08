@@ -24,7 +24,7 @@ module.exports = (err, req, res, next) => {
       return res.status( HTTP_STATUS_NOT_FOUND).send({ message: "Запрашиваемый документ не найден" });
     case err instanceof CastError:
       return res.status(HTTP_STATUS_BAD_REQUEST).send({ message: "Некорректный Id" });
-      case err instanceof ConflictError:
+    case err instanceof ConflictError:
       return res.status(HTTP_STATUS_CONFLICT).send({ message: err.message });
       /* case err.code === 11000:
         return res.status(HTTP_STATUS_CONFLICT).send({ message: 'Пользователь с таким email уже существует' }); */
