@@ -1,3 +1,6 @@
+require('dotenv').config();
+console.log(process.env.NODE_ENV);
+
 const express = require('express');
 const mongoose = require('mongoose');
 const cookieParser = require("cookie-parser");
@@ -8,6 +11,10 @@ const app = express();
 const { errors } = require("celebrate");
 const errorHandler = require('./middlewares/err');
 /* const handleErrors = require('./utils/handleErrors'); */
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+app.use(router);
 
 mongoose.connect('mongodb://127.0.0.1/mestodb', {
   useNewUrlParser: true,
@@ -19,10 +26,7 @@ app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
 });
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(router);
-app.use(cookieParser());
+
 app.use(errors());
 app.use(errorHandler);
 

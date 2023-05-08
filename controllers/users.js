@@ -7,8 +7,9 @@ const {
   HTTP_STATUS_CREATED,
 } = require('../utils/handleErrors');
 
-const { JWT_SECRET } = require('../utils/constants'); //различие,  еще в создании пользователя нет проверки на равенство 1000
+const { JWT_SECRET } = require('../utils/constants');
 const ConflictError = require('../errors/ConflictError');
+const NotFoundError = require('../errors/NotFoundError');
 
 module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
@@ -66,11 +67,25 @@ module.exports.createUser = (req, res, next) => {
   });
 };
 
-module.exports.getCurrentUser = (req, res, next) => {
-  User.findById(req.user._id)
+/* module.exports.getCurrentUser = (req, res, next) => {
+  const { _id } = req.user;
+  User.findById(_id)
     .orFail()
     .then((user) => res.send(user))
     .catch(next);
+}; */
+
+module.exports.getCurrentUser = (req, res, next) => {
+  const { _id } = req.user;
+  User.findById(_id).then((user) => {
+    // проверяем, есть ли пользователь с таким id
+    if (!user) {
+      return next(new NotFoundError('Пользователь не найден.'));
+    }
+
+    // возвращаем пользователя, если он есть
+    return res.status(200).send(user);
+  }).catch(next);
 };
 
 module.exports.updateUser = (req, res, next) => {
