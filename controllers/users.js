@@ -37,7 +37,7 @@ module.exports.getUsers = (req, res, next) => {
     .catch(next);
 };
 
-module.exports.getUserDataById = (req, res, next) => {
+/* module.exports.getUserDataById = (req, res, next) => {
   const _id = req.params.userId;
   User.findById({ _id })
     .orFail()
@@ -56,6 +56,24 @@ module.exports.getUserDataById = (req, res, next) => {
       }
     });
   console.log(_id);
+}; */
+
+module.exports.getUserDataById = (req, res, next) => {
+  User.findById(req.params.userId)
+    .then((user) => {
+      if (!user) {
+        throw new NotFoundError('Пользователь не найден');
+      } else {
+        res.send({ data: user });
+      }
+    })
+    .catch((err) => {
+      if (err instanceof mongoose.Error.CastError) {
+        next(new BadRequestError('Некоректный id'));
+      } else {
+        next(err);
+      }
+    });
 };
 
 module.exports.createUser = (req, res, next) => {

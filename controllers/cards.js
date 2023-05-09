@@ -37,7 +37,7 @@ module.exports.deleteCard = (req, res, next) => {
   const _id = req.params.cardId;
 
   Card.findById({ _id })
-    .orFail()
+    /* .orFail() */
     .then((card) => {
       if (!card) {
         throw new NotFoundError('Карточка не найдена');
@@ -66,8 +66,8 @@ module.exports.likeCard = (req, res, next) => {
     { $addToSet: { likes: req.user._id } },
     { new: true },
   )
-    .orFail()
-    .populate(['owner', 'likes'])
+   /*  .orFail()
+    .populate(['owner', 'likes']) */
     .then((card) => {
       if (!card) {
         throw new NotFoundError('Такой карточки не существует');
@@ -89,13 +89,13 @@ module.exports.dislikeCard = (req, res, next) => {
     { $pull: { likes: req.user._id } },
     { new: true },
   )
-    .orFail()
-    .populate(['owner', 'likes'])
+    /* .orFail()
+    .populate(['owner', 'likes']) */
     .then((card) => {
       if (!card) {
         throw new NotFoundError('Такой карточки не существует');
       }
-      res.send(card);
+      res.send({ data: card });
     })
     .catch((err) => {
       if (err instanceof mongoose.Error.CastError) {
