@@ -18,7 +18,7 @@ module.exports.login = (req, res, next) => {
       const token = jwt.sign(
         { _id: user._id },
         JWT_SECRET,
-        { expiresIn: '7d' }
+        { expiresIn: '7d' },
       );
       res.cookie('jwt', token, {
         maxAge: 3600000 * 24 * 7,
@@ -36,27 +36,6 @@ module.exports.getUsers = (req, res, next) => {
     .then((users) => res.status(200).send(users))
     .catch(next);
 };
-
-/* module.exports.getUserDataById = (req, res, next) => {
-  const _id = req.params.userId;
-  User.findById({ _id })
-    .orFail()
-    .then((user) => {
-      if (!user) {
-        throw new NotFoundError('Пользователь не найден');
-      } else {
-        res.send(user);
-      }
-    })
-    .catch((err) => {
-      if (err instanceof mongoose.Error.CastError) {
-        next(new BadRequestError('Некоректный id'));
-      } else {
-        next(err);
-      }
-    });
-  console.log(_id);
-}; */
 
 module.exports.getUserDataById = (req, res, next) => {
   User.findById(req.params.userId)
@@ -77,11 +56,9 @@ module.exports.getUserDataById = (req, res, next) => {
 };
 
 module.exports.createUser = (req, res, next) => {
-  const { name, about, avatar, email } = req.body;
-  /* User.findOne({ email }).then((user) => {
-    if (user) {
-      next(new ConflictError(`Пользователь с ${email} уже существует.`));
-    } */
+  const {
+    name, about, avatar, email,
+  } = req.body;
 
   return bcrypt.hash(req.body.password, 10)
 

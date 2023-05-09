@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const {
-  getUserDataById, getUsers, createUser, updateUser, updateUserAvatar, getCurrentUser,
+  getUserDataById, getUsers, updateUser, updateUserAvatar, getCurrentUser,
 } = require('../controllers/users');
 const { userIdValidation, updateUserValidation, updateAvatarValidation } = require('../middlewares/validations');
 
