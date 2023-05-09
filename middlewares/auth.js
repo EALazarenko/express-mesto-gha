@@ -1,9 +1,9 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
-import { verify } from 'jsonwebtoken';
-import { JWT_SECRET } from '../utils/constants';
-import AuthError from '../errors/AuthError';
+const jwt = require('jsonwebtoken');
+const { JWT_SECRET } = require('../utils/constants');
+const AuthError = require('../errors/AuthError');
 
-export default (req, res, next) => {
+module.exports = (req, res, next) => {
   const token = req.cookies.jwt;
 
   if (!token) {
@@ -13,7 +13,7 @@ export default (req, res, next) => {
   let payload;
 
   try {
-    payload = verify(token, JWT_SECRET);
+    payload = jwt.verify(token, JWT_SECRET);
   } catch (err) {
     return next(new AuthError('Требуется авторизация2!'));
   }
